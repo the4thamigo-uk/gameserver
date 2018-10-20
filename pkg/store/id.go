@@ -1,10 +1,12 @@
 package store
 
+// ID indicates the identity of the object in the store, comprising a string ID and version number
 type ID struct {
 	ID      string
 	Version int
 }
 
+// NewID creates a new ID instance
 func NewID(id string, ver int) ID {
 	return ID{
 		ID:      id,
@@ -12,6 +14,7 @@ func NewID(id string, ver int) ID {
 	}
 }
 
+// WithVersion returns a new ID with the specified version number
 func (id ID) WithVersion(ver int) ID {
 	return NewID(id.ID, ver)
 }

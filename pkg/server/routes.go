@@ -59,12 +59,14 @@ func newRoutes() routes {
 	return routes
 }
 
+// Link represents a HAL-like (http://stateless.co/hal_specification.html) structure to specify associated links in a REST-response.
 type Link struct {
 	Href   string
 	Rel    string
 	Method string
 }
 
+// Links generates the requested route name (rels) as Links. Uri template replacements are made with any values provided in the vals map.
 func (rs routes) Links(rels []string, vals map[string]interface{}) map[string]Link {
 	links := map[string]Link{}
 	for _, rel := range rels {

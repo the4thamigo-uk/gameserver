@@ -5,25 +5,26 @@ import (
 	"sync"
 )
 
-// MemoryStore very simple storage of objects in memory.
-// Assumes Last-write-wins. Safe to call from multiple goroutines.
-type MemoryStore struct {
+// Store is an in-memory object store
+type Store struct {
 	mtx sync.Mutex
-	m   map[string]*memoryStoreItem
+	m   map[string]*storeItem
 }
 
-type memoryStoreItem struct {
+type storeItem struct {
 	ver  int
 	data string
 }
 
-func NewMemoryStore() *MemoryStore {
-	return &MemoryStore{
-		m: map[string]*memoryStoreItem{},
+// New creates a new instance of an memorystore.Store.
+func New() *Store {
+	return &Store{
+		m: map[string]*storeItem{},
 	}
 }
 
-func (s *MemoryStore) Save(id store.ID, obj interface{}) (store.ID, error) {
+// Save updates the given version of the object, and returns the new version.
+func (s *Store) Save(id store.ID, obj interface{}) (store.ID, error) {
 	s.mtx.Lock()
 	defer s.mtx.Unlock()
 
@@ -40,15 +41,16 @@ func (s *MemoryStore) Save(id store.ID, obj interface{}) (store.ID, error) {
 		return id, errData(id.ID, err)
 	}
 
-	id.Version += 1
-	s.m[id.ID] = &memoryStoreItem{
+	id.Version++
+	s.m[id.ID] = &storeItem{
 		ver:  id.Version,
 		data: data,
 	}
 	return id, nil
 }
 
-func (s *MemoryStore) Load(id store.ID, obj interface{}) (store.ID, error) {
+// Load retrieves a given version of the object.
+func (s *Store) Load(id store.ID, obj interface{}) (store.ID, error) {
 	s.mtx.Lock()
 	defer s.mtx.Unlock()
 
@@ -68,7 +70,8 @@ func (s *MemoryStore) Load(id store.ID, obj interface{}) (store.ID, error) {
 	return id, err
 }
 
-func (s *MemoryStore) LoadAll(newData func() interface{}) (map[string]interface{}, error) {
+// LoadAll retrieves the latest version of all the objects in the store.
+func (s *Store) LoadAll(newData func() interface{}) (map[string]interface{}, error) {
 	s.mtx.Lock()
 	defer s.mtx.Unlock()
 	objs := map[string]interface{}{}

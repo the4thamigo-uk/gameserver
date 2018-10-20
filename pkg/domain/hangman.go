@@ -12,10 +12,12 @@ type hangman struct {
 	Used    string
 }
 
+// Hangman represents a single game of hangman.
 type Hangman struct {
 	hangman hangman
 }
 
+// NewHangman creates a new instance of Hangman.
 func NewHangman(word string, turns int) (*Hangman, error) {
 	if !isValidWord(word) {
 		return nil, errInvalidWord(word)
@@ -35,6 +37,7 @@ func NewHangman(word string, turns int) (*Hangman, error) {
 	}, nil
 }
 
+// Turns returns the number of turns remaining in the game.
 func (g *Hangman) Turns() int {
 	if g.hangman.Turns > 0 {
 		return g.hangman.Turns
@@ -42,14 +45,17 @@ func (g *Hangman) Turns() int {
 	return 0
 }
 
+// Word returns the word that needs to be guessed.
 func (g *Hangman) Word() string {
 	return g.hangman.Word
 }
 
+// Current returns the current state of the players knowledge about the word.
 func (g *Hangman) Current() string {
 	return g.hangman.Current
 }
 
+// State returns the current state of the game (Play, Win, Lose).
 func (g *Hangman) State() State {
 	if g.hangman.Current == g.hangman.Word {
 		return Win
@@ -61,6 +67,7 @@ func (g *Hangman) State() State {
 	return Play
 }
 
+// PlayLetter allows the client to guess a letter in the word.
 func (g *Hangman) PlayLetter(l rune) (bool, error) {
 	l = unicode.ToUpper(l)
 	if g.State() != Play {
@@ -77,7 +84,7 @@ func (g *Hangman) PlayLetter(l rune) (bool, error) {
 	g.hangman.Used += s
 
 	if !strings.Contains(g.hangman.Word, s) {
-		g.hangman.Turns -= 1
+		g.hangman.Turns--
 		return false, nil
 	}
 
@@ -93,6 +100,7 @@ func (g *Hangman) PlayLetter(l rune) (bool, error) {
 	return true, nil
 }
 
+// PlayWord allows the client to guess the word.
 func (g *Hangman) PlayWord(word string) (bool, error) {
 	if g.State() != Play {
 		return false, errGameOver()
@@ -105,7 +113,7 @@ func (g *Hangman) PlayWord(word string) (bool, error) {
 		g.hangman.Current = word
 		return true, nil
 	}
-	g.hangman.Turns -= 1
+	g.hangman.Turns--
 	return false, nil
 }
 

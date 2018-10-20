@@ -7,12 +7,8 @@ import (
 	"testing"
 )
 
-func newID() string {
-	return "123"
-}
-
 func TestService_SaveLoad(t *testing.T) {
-	s := memorystore.NewMemoryStore()
+	s := memorystore.New()
 	g1, _ := NewHangman("word", 6)
 	id1, err := SaveHangman(s, store.NewID("123", 0), g1)
 	assert.Nil(t, err)
@@ -23,7 +19,7 @@ func TestService_SaveLoad(t *testing.T) {
 }
 
 func TestService_VersionIncrements(t *testing.T) {
-	s := memorystore.NewMemoryStore()
+	s := memorystore.New()
 	r1, err := CreateHangman(s, "word", 5)
 	assert.Nil(t, err)
 	assert.Equal(t, 1, r1.ID.Version)
@@ -36,19 +32,19 @@ func TestService_VersionIncrements(t *testing.T) {
 }
 
 func TestService_VersionConflict(t *testing.T) {
-	s := memorystore.NewMemoryStore()
+	s := memorystore.New()
 	r1, err := CreateHangman(s, "word", 5) // user 1 creates game
 	assert.Nil(t, err)
 	r2, err := JoinHangman(s, r1.ID) // user 2 joins game
 	assert.Nil(t, err)
-	r1, err = PlayLetter(s, r1.ID, 'X') // user 1 plays
+	_, err = PlayLetter(s, r1.ID, 'X') // user 1 plays
 	assert.Nil(t, err)
-	r2, err = PlayLetter(s, r2.ID, 'Y') // user 2 plays
+	_, err = PlayLetter(s, r2.ID, 'Y') // user 2 plays
 	assert.NotNil(t, err.(store.ErrWrongVersion))
 }
 
 func TestService_CreateHangman(t *testing.T) {
-	s := memorystore.NewMemoryStore()
+	s := memorystore.New()
 	r, err := CreateHangman(s, "word", 5)
 	assert.Nil(t, err)
 	assert.NotEmpty(t, r.ID)
@@ -58,7 +54,7 @@ func TestService_CreateHangman(t *testing.T) {
 }
 
 func TestService_CreateUniqueIDs(t *testing.T) {
-	s := memorystore.NewMemoryStore()
+	s := memorystore.New()
 	r1, err := CreateHangman(s, "word", 5)
 	assert.Nil(t, err)
 	r2, err := CreateHangman(s, "word", 5)
@@ -67,7 +63,7 @@ func TestService_CreateUniqueIDs(t *testing.T) {
 }
 
 func TestService_PlayWordCorrect(t *testing.T) {
-	s := memorystore.NewMemoryStore()
+	s := memorystore.New()
 	r, _ := CreateHangman(s, "word", 5)
 	r, err := PlayWord(s, r.ID, "word")
 	assert.Nil(t, err)
@@ -79,7 +75,7 @@ func TestService_PlayWordCorrect(t *testing.T) {
 }
 
 func TestService_PlayWordIncorrect(t *testing.T) {
-	s := memorystore.NewMemoryStore()
+	s := memorystore.New()
 	r, _ := CreateHangman(s, "word", 5)
 	r, err := PlayWord(s, r.ID, "notword")
 	assert.Nil(t, err)
@@ -91,7 +87,7 @@ func TestService_PlayWordIncorrect(t *testing.T) {
 }
 
 func TestService_PlayLetterCorrect(t *testing.T) {
-	s := memorystore.NewMemoryStore()
+	s := memorystore.New()
 	r, _ := CreateHangman(s, "word", 5)
 	r, err := PlayLetter(s, r.ID, 'R')
 	assert.Nil(t, err)
@@ -103,7 +99,7 @@ func TestService_PlayLetterCorrect(t *testing.T) {
 }
 
 func TestService_PlayLetterIncorrect(t *testing.T) {
-	s := memorystore.NewMemoryStore()
+	s := memorystore.New()
 	r, _ := CreateHangman(s, "word", 5)
 	r, err := PlayLetter(s, r.ID, 'X')
 	assert.Nil(t, err)

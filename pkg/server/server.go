@@ -11,15 +11,17 @@ import (
 	"time"
 )
 
+// Server is an instance of a REST gameserver.
 type Server struct {
 	s *http.Server
 	g *globals
 }
 
+// NewServer creates a new instance of Server with default in-memory storage,
 func NewServer(addr string) *Server {
 	g := &globals{
 		routes: newRoutes(),
-		store:  memorystore.NewMemoryStore(),
+		store:  memorystore.New(),
 	}
 
 	r := httprouter.New()
@@ -35,26 +37,31 @@ func NewServer(addr string) *Server {
 	}
 }
 
+// WithStore overrides the default in-memory storage with a client-specified storage.
 func (s *Server) WithStore(store store.Store) *Server {
 	s.g.store = store
 	return s
 }
 
+// WithDictionary specifies which word dictionary should be used by the gameserver.
 func (s *Server) WithDictionary(dict *domain.Dictionary) *Server {
 	s.g.dict = dict
 	return s
 }
 
+// ListenAndServe starts the server. This function blocks until either Shutdown is called or the process is terminated.
 func (s *Server) ListenAndServe() error {
 	return s.s.ListenAndServe()
 }
 
+// Shutdown attempts a graceful shutdown of the server, timing out after 5 seconds.
 func (s *Server) Shutdown() {
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 	s.s.Shutdown(ctx)
 }
 
-func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (s *Server) serveHTTP(w http.ResponseWriter, r *http.Request) {
 	s.s.Handler.ServeHTTP(w, r)
 }
 

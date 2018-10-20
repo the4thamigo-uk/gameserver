@@ -39,7 +39,7 @@ func testServerRequest(s *Server, method string, url string, rsp interface{}) ([
 	if err != nil {
 		return nil, err
 	}
-	s.ServeHTTP(w, r)
+	s.serveHTTP(w, r)
 	b, err := unmarshalReader(w.Result().Body, &rsp)
 	if err != nil {
 		return nil, err
@@ -49,7 +49,7 @@ func testServerRequest(s *Server, method string, url string, rsp interface{}) ([
 
 type testHangmanResponse struct {
 	State domain.HangmanResult
-	Links map[string]Link `json:i"_links"`
+	Links map[string]Link `json:"_links"`
 }
 
 func TestServer_PlayLetterToWin(t *testing.T) {

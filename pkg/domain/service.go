@@ -4,6 +4,7 @@ import (
 	"github.com/the4thamigo_uk/gameserver/pkg/store"
 )
 
+// HangmanResult is the result of the last action in a game of hangman.
 type HangmanResult struct {
 	ID      store.ID
 	Current string

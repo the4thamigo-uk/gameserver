@@ -12,7 +12,7 @@ type data struct {
 
 func TestMemoryStore_SaveNew(t *testing.T) {
 	id := store.NewID("123", 0)
-	s := NewMemoryStore()
+	s := New()
 	obj := data{X: 1}
 	id1, err := s.Save(id, obj)
 	assert.Nil(t, err)
@@ -21,7 +21,7 @@ func TestMemoryStore_SaveNew(t *testing.T) {
 
 func TestMemoryStore_SaveNewVersion(t *testing.T) {
 	id := store.NewID("123", 1)
-	s := NewMemoryStore()
+	s := New()
 	obj := data{X: 1}
 	id1, err := s.Save(id, obj)
 	assert.Nil(t, err)
@@ -30,7 +30,7 @@ func TestMemoryStore_SaveNewVersion(t *testing.T) {
 
 func TestMemoryStore_ConsecutiveSave(t *testing.T) {
 	id := store.NewID("123", 0)
-	s := NewMemoryStore()
+	s := New()
 	obj := data{X: 1}
 	id1, err := s.Save(id, obj)
 	assert.Nil(t, err)
@@ -42,7 +42,7 @@ func TestMemoryStore_ConsecutiveSave(t *testing.T) {
 
 func TestMemoryStore_SaveLatest(t *testing.T) {
 	id := store.NewID("123", 0)
-	s := NewMemoryStore()
+	s := New()
 	obj := data{X: 1}
 	_, err := s.Save(id, obj)
 	assert.Nil(t, err)
@@ -54,7 +54,7 @@ func TestMemoryStore_SaveLatest(t *testing.T) {
 
 func TestMemoryStore_SaveWrongVersionFails(t *testing.T) {
 	id := store.NewID("123", 1)
-	s := NewMemoryStore()
+	s := New()
 	obj := data{X: 1}
 	_, err := s.Save(id, obj)
 	assert.Nil(t, err)
@@ -70,15 +70,15 @@ func TestMemoryStore_SaveWrongVersionFails(t *testing.T) {
 
 func TestMemoryStore_SaveBadDataFails(t *testing.T) {
 	id := store.NewID("123", 0)
-	s := NewMemoryStore()
-	obj := make(chan int, 0)
+	s := New()
+	obj := make(chan int)
 	_, err := s.Save(id, obj)
 	assert.NotNil(t, err.(store.ErrData))
 }
 
 func TestMemoryStore_LoadLatest(t *testing.T) {
 	id := store.NewID("123", 0)
-	s := NewMemoryStore()
+	s := New()
 	obj1 := data{X: 1}
 	id1, err := s.Save(id, obj1)
 	assert.Nil(t, err)
@@ -92,7 +92,7 @@ func TestMemoryStore_LoadLatest(t *testing.T) {
 
 func TestMemoryStore_LoadVersion(t *testing.T) {
 	id := store.NewID("123", 0)
-	s := NewMemoryStore()
+	s := New()
 	obj1 := data{X: 1}
 	id1, err := s.Save(id, obj1)
 	assert.Nil(t, err)
@@ -106,7 +106,7 @@ func TestMemoryStore_LoadVersion(t *testing.T) {
 
 func TestMemoryStore_LoadWrongVersionFails(t *testing.T) {
 	id := store.NewID("123", 0)
-	s := NewMemoryStore()
+	s := New()
 	obj1 := data{X: 1}
 	_, err := s.Save(id, obj1)
 	assert.Nil(t, err)
@@ -119,8 +119,8 @@ func TestMemoryStore_LoadWrongVersionFails(t *testing.T) {
 
 func TestMemoryStore_LoadBadDataFails(t *testing.T) {
 	id := store.NewID("123", 0)
-	s := NewMemoryStore()
-	s.m[id.ID] = &memoryStoreItem{data: "garbage"}
+	s := New()
+	s.m[id.ID] = &storeItem{data: "garbage"}
 
 	var obj data
 	_, err := s.Load(id, obj)

@@ -17,7 +17,7 @@ type request struct {
 
 type response struct {
 	State interface{}
-	Links map[string]Link `json:i"_links"`
+	Links map[string]Link `json:"_links"`
 }
 
 type globals struct {

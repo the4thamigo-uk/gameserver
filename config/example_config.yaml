@@ -1,0 +1,7 @@
+address: ":8080"
+hangman:
+  words:
+  - apple
+  - banana
+  - orange
+  turns: 6

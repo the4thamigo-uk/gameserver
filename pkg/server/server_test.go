@@ -12,9 +12,20 @@ import (
 	"testing"
 )
 
-func TestServer_ServerStart(t *testing.T) {
+func testConfig() *Config {
+	return &Config{
+		Address: ":8080",
+		Hangman: HangmanConfig{
+			Words: []string{"word"},
+			Turns: 6,
+			dict:  domain.NewDictionary([]string{"word"}),
+		},
+	}
+}
 
-	s := NewServer(":8080")
+func TestServer_Start(t *testing.T) {
+
+	s := NewServer(testConfig())
 	var err error
 	go func() {
 		err = s.ListenAndServe()
@@ -22,8 +33,6 @@ func TestServer_ServerStart(t *testing.T) {
 	assert.Nil(t, err)
 	s.Shutdown()
 }
-
-var testDict = domain.NewDictionary([]string{"word"})
 
 func unmarshalReader(r io.Reader, obj interface{}) ([]byte, error) {
 	b, err := ioutil.ReadAll(r)
@@ -53,7 +62,7 @@ type testHangmanResponse struct {
 }
 
 func TestServer_PlayLetterToWin(t *testing.T) {
-	s := NewServer(":8080").WithDictionary(testDict)
+	s := NewServer(testConfig())
 	var r1 testHangmanResponse
 	b1, err := testServerRequest(s, "POST", "/hangman/create", &r1)
 	assert.Nil(t, err)

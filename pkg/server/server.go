@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/julienschmidt/httprouter"
-	"github.com/the4thamigo_uk/gameserver/pkg/domain"
 	"github.com/the4thamigo_uk/gameserver/pkg/store"
 	"github.com/the4thamigo_uk/gameserver/pkg/store/memorystore"
 	"net/http"
@@ -18,8 +17,9 @@ type Server struct {
 }
 
 // NewServer creates a new instance of Server with default in-memory storage,
-func NewServer(addr string) *Server {
+func NewServer(cfg *Config) *Server {
 	g := &globals{
+		cfg:    cfg,
 		routes: newRoutes(),
 		store:  memorystore.New(),
 	}
@@ -30,7 +30,7 @@ func NewServer(addr string) *Server {
 	}
 	return &Server{
 		s: &http.Server{
-			Addr:    addr,
+			Addr:    cfg.Address,
 			Handler: r,
 		},
 		g: g,
@@ -40,12 +40,6 @@ func NewServer(addr string) *Server {
 // WithStore overrides the default in-memory storage with a client-specified storage.
 func (s *Server) WithStore(store store.Store) *Server {
 	s.g.store = store
-	return s
-}
-
-// WithDictionary specifies which word dictionary should be used by the gameserver.
-func (s *Server) WithDictionary(dict *domain.Dictionary) *Server {
-	s.g.dict = dict
 	return s
 }
 

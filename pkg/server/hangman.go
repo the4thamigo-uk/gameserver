@@ -15,7 +15,8 @@ func hangmanList(r *request, g *globals) (*response, error) {
 }
 
 func hangmanCreate(r *request, g *globals) (*response, error) {
-	word := g.dict.GetAt(rand.Int())
+	cfg := g.cfg.Hangman
+	word := cfg.dict.GetAt(rand.Int())
 	res, err := domain.CreateHangman(g.store, word, hangmanDefaultTurns)
 	if err != nil {
 		return nil, err

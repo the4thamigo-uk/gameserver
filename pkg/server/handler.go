@@ -2,7 +2,6 @@ package server
 
 import (
 	"github.com/julienschmidt/httprouter"
-	"github.com/the4thamigo_uk/gameserver/pkg/domain"
 	"github.com/the4thamigo_uk/gameserver/pkg/store"
 	"net/http"
 )
@@ -21,9 +20,9 @@ type response struct {
 }
 
 type globals struct {
+	cfg    *Config
 	routes routes
 	store  store.Store
-	dict   *domain.Dictionary
 }
 
 func rootIndex(r *request, g *globals) (*response, error) {

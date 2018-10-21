@@ -1,7 +1,7 @@
 package memorystore
 
 import (
-	"github.com/the4thamigo_uk/gameserver/pkg/store"
+	"github.com/the4thamigo-uk/gameserver/pkg/store"
 	"sync"
 )
 

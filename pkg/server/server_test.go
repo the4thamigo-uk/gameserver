@@ -3,7 +3,7 @@ package server
 import (
 	"encoding/json"
 	"github.com/stretchr/testify/assert"
-	"github.com/the4thamigo_uk/gameserver/pkg/domain"
+	"github.com/the4thamigo-uk/gameserver/pkg/domain"
 	"io"
 	"io/ioutil"
 	"net/http"

@@ -2,7 +2,7 @@ package memorystore
 
 import (
 	"github.com/pkg/errors"
-	"github.com/the4thamigo_uk/gameserver/pkg/store"
+	"github.com/the4thamigo-uk/gameserver/pkg/store"
 )
 
 func errWrongVersion(id string, expVer int, actVer int) error {

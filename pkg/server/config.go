@@ -2,7 +2,7 @@ package server
 
 import (
 	"github.com/miracl/conflate"
-	"github.com/the4thamigo_uk/gameserver/pkg/domain"
+	"github.com/the4thamigo-uk/gameserver/pkg/domain"
 )
 
 // Config defines the main settings of the game server

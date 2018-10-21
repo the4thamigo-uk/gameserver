@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"github.com/the4thamigo_uk/gameserver/pkg/store"
+	"github.com/the4thamigo-uk/gameserver/pkg/store"
 )
 
 // HangmanResult is the result of the last action in a game of hangman.

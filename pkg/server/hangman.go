@@ -2,8 +2,8 @@ package server
 
 import (
 	"github.com/pkg/errors"
-	"github.com/the4thamigo_uk/gameserver/pkg/domain"
-	"github.com/the4thamigo_uk/gameserver/pkg/store"
+	"github.com/the4thamigo-uk/gameserver/pkg/domain"
+	"github.com/the4thamigo-uk/gameserver/pkg/store"
 	"math/rand"
 	"strconv"
 )

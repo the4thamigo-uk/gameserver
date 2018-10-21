@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/spf13/pflag"
-	"github.com/the4thamigo_uk/gameserver/pkg/server"
+	"github.com/the4thamigo-uk/gameserver/pkg/server"
 	"os"
 )
 

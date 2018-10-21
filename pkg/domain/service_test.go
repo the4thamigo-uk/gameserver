@@ -2,8 +2,8 @@ package domain
 
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/the4thamigo_uk/gameserver/pkg/store"
-	"github.com/the4thamigo_uk/gameserver/pkg/store/memorystore"
+	"github.com/the4thamigo-uk/gameserver/pkg/store"
+	"github.com/the4thamigo-uk/gameserver/pkg/store/memorystore"
 	"testing"
 )
 

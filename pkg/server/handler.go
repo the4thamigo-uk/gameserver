@@ -2,7 +2,7 @@ package server
 
 import (
 	"github.com/julienschmidt/httprouter"
-	"github.com/the4thamigo_uk/gameserver/pkg/store"
+	"github.com/the4thamigo-uk/gameserver/pkg/store"
 	"net/http"
 )
 

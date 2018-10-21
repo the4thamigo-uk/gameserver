@@ -12,8 +12,6 @@ install:
   - go get honnef.co/go/tools/cmd/megacheck
 
 script:
-  - pwd
-  - find
   - test -z "$(gofmt -s -l . 2>&1 | grep -v vendor | tee /dev/stderr)"
   - go vet ./pkg/... ./cmd/...
   - golint -set_exit_status ./pkg/... ./cmd/...

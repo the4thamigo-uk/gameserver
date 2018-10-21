@@ -15,7 +15,13 @@ type request struct {
 	rt *route
 }
 
+type errorData struct {
+	Message string `json:"message,omitempty"`
+	Code    int    `json:"code,omitempty"`
+}
+
 type response struct {
+	Error *errorData  `json:"error,omitempty"`
 	Game  interface{} `json:"game,omitempty"`
 	Games interface{} `json:"games,omitempty"`
 	Links links       `json:"_links,omitempty"`

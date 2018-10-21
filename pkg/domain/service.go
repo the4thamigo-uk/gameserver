@@ -6,14 +6,15 @@ import (
 
 // HangmanResult is the result of the last action in a game of hangman.
 type HangmanResult struct {
-	ID      store.ID
-	Current string
-	Word    *string `json:omitempty`
-	Turns   int
-	State   State
-	Success *bool `json:omitempty`
+	ID      store.ID `json:"id,omitempty"`
+	Current string   `json:"current,omitempty"`
+	Word    *string  `json:"word,omitempty"`
+	Turns   int      `json:"turns,omitempty"`
+	State   State    `json:"state,omitempty"`
+	Success *bool    `json:"success,omitempty"`
 }
 
+// HangmanResults is a slice of HangmanResult
 type HangmanResults []*HangmanResult
 
 func newHangmanResult(g *Hangman, id store.ID, success *bool) *HangmanResult {

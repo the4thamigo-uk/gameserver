@@ -61,7 +61,7 @@ func testServerRequest(s *Server, method string, url string, rsp interface{}) ([
 }
 
 type testHangmanResponse struct {
-	Game  domain.HangmanResult
+	Game  *domain.HangmanResult
 	Links links `json:"_links"`
 }
 

@@ -26,13 +26,17 @@ func run(url string) error {
 		return err
 	}
 	for {
-		rel, rsp, err = processResponse(url, rel, rsp)
+		rel2, rsp2, err := processResponse(url, rel, rsp)
 		if err != nil {
 			return err
 		}
-		displayResult(rel, rsp)
+		displayResult(rel2, rsp2)
+		if rsp2.Error != nil {
+			// response contained an error so retry processing of last message
+			continue
+		}
+		rel, rsp = rel2, rsp2
 	}
-	return nil
 }
 
 func processResponse(rootUrl string, rel string, rsp *response) (string, *response, error) {
@@ -80,7 +84,6 @@ func optionList(ls links) options {
 }
 
 func enterOption(opts options) (*option, error) {
-retry:
 	for {
 		displayOptions(opts)
 		fmt.Println("Please enter an option :")
@@ -92,7 +95,6 @@ retry:
 		fmt.Printf("Option not valid. Please try again.")
 		fmt.Println(i)
 	}
-	goto retry
 }
 
 func displayOptions(opts options) {
@@ -127,7 +129,17 @@ func enterValues(opt *option) (string, error) {
 }
 
 func displayResult(rel string, rsp *response) {
+	if rsp.Error != nil {
+		fmt.Printf("The server reported an error : '%v'\f", rsp.Error.Message)
+	}
 	if rsp.Game != nil {
+		if rsp.Game.Success != nil {
+			if *rsp.Game.Success {
+				fmt.Println("Your guess was CORRECT.")
+			} else {
+				fmt.Println("Your guess was INCORRECT.")
+			}
+		}
 		switch rsp.Game.State {
 		case domain.Win:
 			fmt.Printf("You have WON with %v turns remaining. The word was '%v'.\n", rsp.Game.Turns, *rsp.Game.Word)
@@ -141,6 +153,9 @@ func displayResult(rel string, rsp *response) {
 
 func request(method string, url string, body []byte) (*response, error) {
 	req, err := http.NewRequest(method, url, bytes.NewReader(body))
+	if err != nil {
+		return nil, err
+	}
 	rsp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err

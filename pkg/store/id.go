@@ -2,8 +2,8 @@ package store
 
 // ID indicates the identity of the object in the store, comprising a string ID and version number
 type ID struct {
-	ID      string
-	Version int
+	ID      string `json:"id,omitempty"`
+	Version int    `json:"version,omitempty"`
 }
 
 // NewID creates a new ID instance

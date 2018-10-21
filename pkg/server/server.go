@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/julienschmidt/httprouter"
+	log "github.com/sirupsen/logrus"
 	"github.com/the4thamigo-uk/gameserver/pkg/store"
 	"github.com/the4thamigo-uk/gameserver/pkg/store/memorystore"
 	"net/http"
@@ -65,13 +66,14 @@ func rootHandler(rt *route, g *globals) httprouter.Handle {
 		}
 		rsp, err := rt.handler(ctx, g)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
+			log.Error(err)
+			w.WriteHeader(http.StatusBadRequest)
+			rsp = errResponse(err, http.StatusBadRequest)
 		}
 		b, err := json.Marshal(rsp)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
+			log.Error(err)
+			w.WriteHeader(http.StatusInternalServerError)
 		}
 		w.Header().Set("Content-Type", "application/hal+json")
 		_, err = w.Write(b)
@@ -80,4 +82,12 @@ func rootHandler(rt *route, g *globals) httprouter.Handle {
 			return
 		}
 	}
+}
+
+func errResponse(err error, code int) *response {
+	return &response{
+		Error: &errorData{
+			Message: err.Error(),
+			Code:    code,
+		}}
 }

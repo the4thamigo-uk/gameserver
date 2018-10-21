@@ -6,9 +6,9 @@ import (
 )
 
 type link struct {
-	Title  string
-	Href   string
-	Method string
+	Title  string `json:"title,omitempty"`
+	Href   string `json:"href,omitempty"`
+	Method string `json:"method,omitempty"`
 }
 
 type links map[string]*link

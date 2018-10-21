@@ -16,8 +16,9 @@ type request struct {
 }
 
 type response struct {
-	State interface{}
-	Links links `json:"_links"`
+	Game  interface{} `json:"game,omitempty"`
+	Games interface{} `json:"games,omitempty"`
+	Links links       `json:"_links,omitempty"`
 }
 
 type globals struct {
@@ -28,6 +29,6 @@ type globals struct {
 
 func rootIndex(r *request, g *globals) (*response, error) {
 	return &response{
-		Links: newLinks(r.rt.linksRoutes, nil),
+		Links: linksForRoute(r.rt, nil),
 	}, nil
 }

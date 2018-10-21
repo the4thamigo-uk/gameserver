@@ -61,7 +61,7 @@ func testServerRequest(s *Server, method string, url string, rsp interface{}) ([
 }
 
 type testHangmanResponse struct {
-	State domain.HangmanResult
+	Game  domain.HangmanResult
 	Links links `json:"_links"`
 }
 
@@ -71,11 +71,10 @@ func TestServer_PlayLetterToWin(t *testing.T) {
 	b1, err := testServerRequest(s, "POST", "/hangman/create", &r1)
 	assert.Nil(t, err)
 	t.Log(string(b1))
-	assert.Equal(t, 1, r1.State.ID.Version)
-	assert.Equal(t, "    ", r1.State.Current)
-	assert.Equal(t, hangmanDefaultTurns, r1.State.Turns)
-	assert.Equal(t, domain.Play, r1.State.State)
-	//assert.Equal(t, "", r1.State.Used)
+	assert.Equal(t, 1, r1.Game.ID.Version)
+	assert.Equal(t, "    ", r1.Game.Current)
+	assert.Equal(t, hangmanDefaultTurns, r1.Game.Turns)
+	assert.Equal(t, domain.Play, r1.Game.State)
 
 	// play valid letter
 	link2 := r1.Links[relHangmanPlayLetter]
@@ -85,13 +84,12 @@ func TestServer_PlayLetterToWin(t *testing.T) {
 	assert.Nil(t, err)
 	t.Log(string(b2))
 
-	assert.Equal(t, r1.State.ID.ID, r2.State.ID.ID)
-	assert.Equal(t, 2, r2.State.ID.Version)
-	assert.Equal(t, "W   ", r2.State.Current)
-	assert.Equal(t, hangmanDefaultTurns, r2.State.Turns)
-	assert.Equal(t, domain.Play, r2.State.State)
-	assert.True(t, r2.State.Success)
-	//assert.Equal(t, "W", r2.State.Used)
+	assert.Equal(t, r1.Game.ID.ID, r2.Game.ID.ID)
+	assert.Equal(t, 2, r2.Game.ID.Version)
+	assert.Equal(t, "W   ", r2.Game.Current)
+	assert.Equal(t, hangmanDefaultTurns, r2.Game.Turns)
+	assert.Equal(t, domain.Play, r2.Game.State)
+	assert.True(t, *r2.Game.Success)
 
 	link3 := r2.Links[relHangmanPlayLetter]
 	var r3 testHangmanResponse
@@ -100,11 +98,10 @@ func TestServer_PlayLetterToWin(t *testing.T) {
 	assert.Nil(t, err)
 	t.Log(string(b3))
 
-	assert.Equal(t, r1.State.ID.ID, r3.State.ID.ID)
-	assert.Equal(t, 3, r3.State.ID.Version)
-	assert.Equal(t, "W   ", r3.State.Current)
-	assert.Equal(t, hangmanDefaultTurns-1, r3.State.Turns)
-	assert.Equal(t, domain.Play, r3.State.State)
-	assert.False(t, r3.State.Success)
-	//assert.Equal(t, "W", r3.State.Used)
+	assert.Equal(t, r1.Game.ID.ID, r3.Game.ID.ID)
+	assert.Equal(t, 3, r3.Game.ID.Version)
+	assert.Equal(t, "W   ", r3.Game.Current)
+	assert.Equal(t, hangmanDefaultTurns-1, r3.Game.Turns)
+	assert.Equal(t, domain.Play, r3.Game.State)
+	assert.False(t, *r3.Game.Success)
 }

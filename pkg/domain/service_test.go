@@ -80,7 +80,7 @@ func TestService_PlayWordCorrect(t *testing.T) {
 	assert.Equal(t, "WORD", r.Current)
 	assert.Equal(t, 5, r.Turns)
 	assert.Equal(t, Win, r.State)
-	assert.True(t, r.Success)
+	assert.True(t, *r.Success)
 }
 
 func TestService_PlayWordIncorrect(t *testing.T) {
@@ -92,7 +92,7 @@ func TestService_PlayWordIncorrect(t *testing.T) {
 	assert.Equal(t, "    ", r.Current)
 	assert.Equal(t, 4, r.Turns)
 	assert.Equal(t, Play, r.State)
-	assert.False(t, r.Success)
+	assert.False(t, *r.Success)
 }
 
 func TestService_PlayLetterCorrect(t *testing.T) {
@@ -104,7 +104,7 @@ func TestService_PlayLetterCorrect(t *testing.T) {
 	assert.Equal(t, "  R ", r.Current)
 	assert.Equal(t, 5, r.Turns)
 	assert.Equal(t, Play, r.State)
-	assert.True(t, r.Success)
+	assert.True(t, *r.Success)
 }
 
 func TestService_PlayLetterIncorrect(t *testing.T) {
@@ -116,7 +116,7 @@ func TestService_PlayLetterIncorrect(t *testing.T) {
 	assert.Equal(t, "    ", r.Current)
 	assert.Equal(t, 4, r.Turns)
 	assert.Equal(t, Play, r.State)
-	assert.False(t, r.Success)
+	assert.False(t, *r.Success)
 }
 
 func TestService_ListGames(t *testing.T) {
@@ -130,7 +130,12 @@ func TestService_ListGames(t *testing.T) {
 
 	t.Log(rs)
 
+	m := map[string]*HangmanResult{}
+	for _, r := range rs {
+		m[r.ID.ID] = r
+	}
+
 	assert.Len(t, rs, 2)
-	assert.Equal(t, r1, rs[r1.ID.ID])
-	assert.Equal(t, r2, rs[r2.ID.ID])
+	assert.Equal(t, r1, m[r1.ID.ID])
+	assert.Equal(t, r2, m[r2.ID.ID])
 }

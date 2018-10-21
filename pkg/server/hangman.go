@@ -17,15 +17,7 @@ func hangmanCreate(r *request, g *globals) (*response, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &response{
-		State: res,
-		Links: newLinks(
-			r.rt.linksRoutes,
-			map[string]interface{}{
-				"id":      res.ID.ID,
-				"version": res.ID.Version,
-			},
-		)}, nil
+	return hangmanResponse(r.rt, res), nil
 }
 
 func hangmanList(r *request, g *globals) (*response, error) {
@@ -34,9 +26,9 @@ func hangmanList(r *request, g *globals) (*response, error) {
 		return nil, err
 	}
 	return &response{
-		State: res,
-		Links: newLinks(
-			r.rt.linksRoutes,
+		Games: res,
+		Links: linksForRoute(
+			r.rt,
 			nil,
 		)}, nil
 }
@@ -50,15 +42,7 @@ func hangmanJoin(r *request, g *globals) (*response, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &response{
-		State: res,
-		Links: newLinks(
-			r.rt.linksRoutes,
-			map[string]interface{}{
-				"id":      res.ID.ID,
-				"version": res.ID.Version,
-			},
-		)}, nil
+	return hangmanResponse(r.rt, res), nil
 }
 
 func hangmanPlayLetter(r *request, g *globals) (*response, error) {
@@ -74,15 +58,7 @@ func hangmanPlayLetter(r *request, g *globals) (*response, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &response{
-		State: res,
-		Links: newLinks(
-			r.rt.linksRoutes,
-			map[string]interface{}{
-				"id":      res.ID.ID,
-				"version": res.ID.Version,
-			},
-		)}, nil
+	return hangmanResponse(r.rt, res), nil
 }
 
 func hangmanPlayWord(r *request, g *globals) (*response, error) {
@@ -95,16 +71,7 @@ func hangmanPlayWord(r *request, g *globals) (*response, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &response{
-		State: res,
-		Links: newLinks(
-			r.rt.linksRoutes,
-
-			map[string]interface{}{
-				"id":      res.ID.ID,
-				"version": res.ID.Version,
-			},
-		)}, nil
+	return hangmanResponse(r.rt, res), nil
 }
 
 func gameID(r *request) (*store.ID, error) {
@@ -115,4 +82,22 @@ func gameID(r *request) (*store.ID, error) {
 	}
 	gid := store.NewID(id, ver)
 	return &gid, nil
+}
+
+func hangmanResponse(rt *route, res *domain.HangmanResult) *response {
+	ls := linksForRoute(
+		rt,
+		map[string]interface{}{
+			"id":      res.ID.ID,
+			"version": res.ID.Version,
+		},
+	)
+	if res.State != domain.Play {
+		delete(ls, relHangmanPlayLetter)
+		delete(ls, relHangmanPlayWord)
+	}
+	return &response{
+		Game:  res,
+		Links: ls,
+	}
 }

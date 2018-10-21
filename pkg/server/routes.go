@@ -1,6 +1,7 @@
 package server
 
 import (
+	"net/http"
 	"regexp"
 )
 
@@ -9,6 +10,7 @@ type route struct {
 	uriTmpl     string
 	method      string
 	handler     handler
+	title       string
 	linksRels   []string
 	linksRoutes routes
 }
@@ -35,40 +37,46 @@ func newRoutes() routes {
 	}
 	rs := routes{
 		relIndex: &route{
+			title:   "Game server",
 			path:    "/",
-			method:  "GET",
+			method:  http.MethodGet,
 			handler: rootIndex,
 			linksRels: []string{
 				relHangmanList,
 			},
 		},
 		relHangmanList: &route{
+			title:     "Hangman game list",
 			path:      "/hangman",
-			method:    "GET",
+			method:    http.MethodGet,
 			handler:   hangmanList,
 			linksRels: append(playRels, relHangmanJoin),
 		},
 		relHangmanJoin: &route{
+			title:     "Join hangman game",
 			path:      "/hangman/:id/:version",
-			method:    "GET",
+			method:    http.MethodGet,
 			handler:   hangmanJoin,
 			linksRels: playRels,
 		},
 		relHangmanCreate: &route{
+			title:     "Create hangman game",
 			path:      "/hangman/create",
-			method:    "POST",
+			method:    http.MethodPost,
 			handler:   hangmanCreate,
 			linksRels: playRels,
 		},
 		relHangmanPlayLetter: &route{
+			title:     "Guess a letter",
 			path:      "/hangman/:id/:version/letter/:letter",
-			method:    "PATCH",
+			method:    http.MethodPatch,
 			handler:   hangmanPlayLetter,
 			linksRels: playRels,
 		},
 		relHangmanPlayWord: &route{
+			title:     "Guess the word",
 			path:      "/hangman/:id/:version/word/:word",
-			method:    "PATCH",
+			method:    http.MethodPatch,
 			handler:   hangmanPlayWord,
 			linksRels: playRels,
 		},

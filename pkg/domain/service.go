@@ -8,19 +8,27 @@ import (
 type HangmanResult struct {
 	ID      store.ID
 	Current string
+	Word    *string `json:omitempty`
 	Turns   int
 	State   State
-	Success bool
+	Success *bool `json:omitempty`
 }
 
-func newHangmanResult(g *Hangman, id store.ID, success bool) *HangmanResult {
-	return &HangmanResult{
+type HangmanResults []*HangmanResult
+
+func newHangmanResult(g *Hangman, id store.ID, success *bool) *HangmanResult {
+	res := &HangmanResult{
 		ID:      id,
 		Current: g.Current(),
 		Turns:   g.Turns(),
 		State:   g.State(),
 		Success: success,
 	}
+	if g.State() != Play {
+		word := g.Word()
+		res.Word = &word
+	}
+	return res
 }
 
 // LoadHangman loads a specific game from the store
@@ -72,19 +80,19 @@ func CreateHangman(stg store.Store, word string, turns int) (*HangmanResult, err
 	if err != nil {
 		return nil, err
 	}
-	return newHangmanResult(g, id, false), nil
+	return newHangmanResult(g, id, nil), nil
 }
 
 // ListHangman returns details of all current games of hangman in the store
-func ListHangman(stg store.Store) (map[string]*HangmanResult, error) {
+func ListHangman(stg store.Store) (HangmanResults, error) {
 	gs, err := LoadAllHangman(stg)
 	if err != nil {
 		return nil, err
 	}
-	rs := map[string]*HangmanResult{}
+	rs := HangmanResults{}
 	for id, g := range gs {
-		r := newHangmanResult(g, id, false)
-		rs[id.ID] = r
+		r := newHangmanResult(g, id, nil)
+		rs = append(rs, r)
 	}
 	return rs, nil
 }
@@ -95,7 +103,7 @@ func JoinHangman(stg store.Store, id store.ID) (*HangmanResult, error) {
 	if err != nil {
 		return nil, err
 	}
-	return newHangmanResult(g, id, false), nil
+	return newHangmanResult(g, id, nil), nil
 }
 
 // PlayLetter submits a letter guess to a specified game
@@ -112,7 +120,7 @@ func PlayLetter(stg store.Store, id store.ID, letter rune) (*HangmanResult, erro
 	if err != nil {
 		return nil, err
 	}
-	return newHangmanResult(g, id, ok), nil
+	return newHangmanResult(g, id, ptrBool(ok)), nil
 }
 
 // PlayWord submits a word guess to a specified game.
@@ -129,5 +137,9 @@ func PlayWord(stg store.Store, id store.ID, word string) (*HangmanResult, error)
 	if err != nil {
 		return nil, err
 	}
-	return newHangmanResult(g, ver, ok), nil
+	return newHangmanResult(g, ver, ptrBool(ok)), nil
+}
+
+func ptrBool(b bool) *bool {
+	return &b
 }

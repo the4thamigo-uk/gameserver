@@ -6,18 +6,18 @@ import (
 )
 
 type link struct {
+	Title  string
 	Href   string
 	Method string
 }
 
 type links map[string]*link
 
-func newLinks(rs routes, vals map[string]interface{}) links {
-	if len(rs) == 0 {
-		return nil
+func linksForRoute(r *route, vals map[string]interface{}) links {
+	ls := links{
+		"self": newLink(r, vals),
 	}
-	ls := links{}
-	for rel, r := range rs {
+	for rel, r := range r.linksRoutes {
 		ls[rel] = newLink(r, vals)
 	}
 	return ls
@@ -32,5 +32,6 @@ func newLink(r *route, vals map[string]interface{}) *link {
 	return &link{
 		Href:   href,
 		Method: r.method,
+		Title:  r.title,
 	}
 }

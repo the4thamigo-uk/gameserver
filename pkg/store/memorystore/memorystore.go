@@ -2,7 +2,6 @@ package memorystore
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/the4thamigo-uk/gameserver/pkg/store"
 	"sync"
 )
@@ -79,9 +78,7 @@ func (s *Store) LoadAll(newData func() interface{}) (map[store.ID]interface{}, e
 	objs := map[store.ID]interface{}{}
 	for id, item := range s.m {
 		obj := newData()
-		fmt.Println(string(item.data))
 		err := json.Unmarshal(item.data, obj)
-		fmt.Println(obj)
 		if err != nil {
 			return nil, err
 		}

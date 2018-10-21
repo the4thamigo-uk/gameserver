@@ -142,6 +142,7 @@ func TestMemoryStore_LoadAll(t *testing.T) {
 	assert.Nil(t, err)
 
 	objs, err := s.LoadAll(newData)
+	assert.Nil(t, err)
 	assert.Len(t, objs, 2)
 	assert.Equal(t, obj1, *objs[id1.WithVersion(2)].(*data))
 	assert.Equal(t, obj2, *objs[id2.WithVersion(3)].(*data))

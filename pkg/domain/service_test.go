@@ -58,6 +58,7 @@ func TestService_JoinHangman(t *testing.T) {
 	r1, err := CreateHangman(s, "word", 5)
 	assert.Nil(t, err)
 	r2, err := JoinHangman(s, r1.ID)
+	assert.Nil(t, err)
 	assert.Equal(t, r1, r2)
 }
 

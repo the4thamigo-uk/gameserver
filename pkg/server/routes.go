@@ -31,6 +31,7 @@ func newRoutes() routes {
 		relHangmanPlayLetter,
 		relHangmanPlayWord,
 		relHangmanCreate,
+		relHangmanList,
 	}
 	rs := routes{
 		relIndex: &route{

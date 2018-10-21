@@ -62,7 +62,7 @@ func testServerRequest(s *Server, method string, url string, rsp interface{}) ([
 
 type testHangmanResponse struct {
 	State domain.HangmanResult
-	Links map[string]Link `json:"_links"`
+	Links links `json:"_links"`
 }
 
 func TestServer_PlayLetterToWin(t *testing.T) {

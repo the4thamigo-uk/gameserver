@@ -9,14 +9,15 @@ import (
 type handler func(r *request, g *globals) (*response, error)
 
 type request struct {
-	r *http.Request
-	p httprouter.Params
-	w http.ResponseWriter
+	r  *http.Request
+	p  httprouter.Params
+	w  http.ResponseWriter
+	rt *route
 }
 
 type response struct {
 	State interface{}
-	Links map[string]Link `json:"_links"`
+	Links links `json:"_links"`
 }
 
 type globals struct {
@@ -27,10 +28,6 @@ type globals struct {
 
 func rootIndex(r *request, g *globals) (*response, error) {
 	return &response{
-		Links: g.routes.Links(
-			[]string{
-				relHangmanList,
-			},
-			nil,
-		)}, nil
+		Links: newLinks(r.rt.linksRoutes, nil),
+	}, nil
 }

@@ -1,16 +1,16 @@
 package server
 
 import (
-	"fmt"
 	"regexp"
-	"strings"
 )
 
 type route struct {
-	path    string
-	method  string
-	handler handler
-	uriTmpl string
+	path        string
+	uriTmpl     string
+	method      string
+	handler     handler
+	linksRels   []string
+	linksRoutes routes
 }
 
 type routes map[string]*route
@@ -27,68 +27,67 @@ const (
 )
 
 func newRoutes() routes {
-	routes := routes{
+	playRels := []string{
+		relHangmanPlayLetter,
+		relHangmanPlayWord,
+		relHangmanCreate,
+	}
+	rs := routes{
 		relIndex: &route{
 			path:    "/",
 			method:  "GET",
 			handler: rootIndex,
+			linksRels: []string{
+				relHangmanList,
+			},
 		},
 		relHangmanList: &route{
-			path:    "/hangman",
-			method:  "GET",
-			handler: hangmanList,
+			path:      "/hangman",
+			method:    "GET",
+			handler:   hangmanList,
+			linksRels: append(playRels, relHangmanJoin),
 		},
 		relHangmanJoin: &route{
-			path:    "/hangman/:id/:version",
-			method:  "GET",
-			handler: hangmanJoin,
+			path:      "/hangman/:id/:version",
+			method:    "GET",
+			handler:   hangmanJoin,
+			linksRels: playRels,
 		},
 		relHangmanCreate: &route{
-			path:    "/hangman/create",
-			method:  "POST",
-			handler: hangmanCreate,
+			path:      "/hangman/create",
+			method:    "POST",
+			handler:   hangmanCreate,
+			linksRels: playRels,
 		},
 		relHangmanPlayLetter: &route{
-			path:    "/hangman/:id/:version/letter/:letter",
-			method:  "PATCH",
-			handler: hangmanPlayLetter,
+			path:      "/hangman/:id/:version/letter/:letter",
+			method:    "PATCH",
+			handler:   hangmanPlayLetter,
+			linksRels: playRels,
 		},
 		relHangmanPlayWord: &route{
-			path:    "/hangman/:id/:version/word/:word",
-			method:  "PATCH",
-			handler: hangmanPlayWord,
+			path:      "/hangman/:id/:version/word/:word",
+			method:    "PATCH",
+			handler:   hangmanPlayWord,
+			linksRels: playRels,
 		},
 	}
-	for _, route := range routes {
-		route.uriTmpl = uriTmplRegex.ReplaceAllString(route.path, `{$1}`)
+	for _, r := range rs {
+		r.init(rs)
 	}
-	return routes
+	return rs
 }
 
-// Link represents a HAL-like (http://stateless.co/hal_specification.html) structure to specify associated links in a REST-response.
-type Link struct {
-	Href   string
-	Method string
-}
+func (r *route) init(rs routes) {
+	r.uriTmpl = uriTmplRegex.ReplaceAllString(r.path, `{$1}`)
 
-// Links generates the requested route name (rels) as Links. Uri template replacements are made with any values provided in the vals map.
-func (rs routes) Links(rels []string, vals map[string]interface{}) map[string]Link {
-	links := map[string]Link{}
-	for _, rel := range rels {
-		r, ok := rs[rel]
+	lrs := routes{}
+	for _, lrel := range r.linksRels {
+		lr, ok := rs[lrel]
 		if !ok {
 			continue
 		}
-		href := r.uriTmpl
-		for k, v := range vals {
-			sv := fmt.Sprintf("%v", v)
-			href = strings.Replace(href, `{`+k+`}`, sv, -1)
-		}
-		links[rel] = Link{
-			Href:   href,
-			Method: r.method,
-		}
-
+		lrs[lrel] = lr
 	}
-	return links
+	r.linksRoutes = lrs
 }

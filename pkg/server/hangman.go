@@ -19,11 +19,8 @@ func hangmanCreate(r *request, g *globals) (*response, error) {
 	}
 	return &response{
 		State: res,
-		Links: g.routes.Links(
-			[]string{
-				relHangmanPlayLetter,
-				relHangmanPlayWord,
-			},
+		Links: newLinks(
+			r.rt.linksRoutes,
 			map[string]interface{}{
 				"id":      res.ID.ID,
 				"version": res.ID.Version,
@@ -38,11 +35,8 @@ func hangmanList(r *request, g *globals) (*response, error) {
 	}
 	return &response{
 		State: res,
-		Links: g.routes.Links(
-			[]string{
-				relHangmanJoin,
-				relHangmanCreate,
-			},
+		Links: newLinks(
+			r.rt.linksRoutes,
 			nil,
 		)}, nil
 }
@@ -58,11 +52,8 @@ func hangmanJoin(r *request, g *globals) (*response, error) {
 	}
 	return &response{
 		State: res,
-		Links: g.routes.Links(
-			[]string{
-				relHangmanPlayLetter,
-				relHangmanPlayWord,
-			},
+		Links: newLinks(
+			r.rt.linksRoutes,
 			map[string]interface{}{
 				"id":      res.ID.ID,
 				"version": res.ID.Version,
@@ -85,11 +76,8 @@ func hangmanPlayLetter(r *request, g *globals) (*response, error) {
 	}
 	return &response{
 		State: res,
-		Links: g.routes.Links(
-			[]string{
-				relHangmanPlayLetter,
-				relHangmanPlayWord,
-			},
+		Links: newLinks(
+			r.rt.linksRoutes,
 			map[string]interface{}{
 				"id":      res.ID.ID,
 				"version": res.ID.Version,
@@ -109,11 +97,9 @@ func hangmanPlayWord(r *request, g *globals) (*response, error) {
 	}
 	return &response{
 		State: res,
-		Links: g.routes.Links(
-			[]string{
-				relHangmanPlayLetter,
-				relHangmanPlayWord,
-			},
+		Links: newLinks(
+			r.rt.linksRoutes,
+
 			map[string]interface{}{
 				"id":      res.ID.ID,
 				"version": res.ID.Version,

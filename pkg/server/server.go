@@ -26,7 +26,7 @@ func NewServer(cfg *Config) *Server {
 
 	r := httprouter.New()
 	for _, route := range g.routes {
-		r.Handle(route.method, route.path, rootHandler(route.handler, g))
+		r.Handle(route.method, route.path, rootHandler(route, g))
 	}
 	return &Server{
 		s: &http.Server{
@@ -55,14 +55,15 @@ func (s *Server) Shutdown() {
 	s.s.Shutdown(ctx)
 }
 
-func rootHandler(h handler, g *globals) httprouter.Handle {
+func rootHandler(rt *route, g *globals) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		ctx := &request{
-			r: r,
-			w: w,
-			p: p,
+			r:  r,
+			w:  w,
+			p:  p,
+			rt: rt,
 		}
-		rsp, err := h(ctx, g)
+		rsp, err := rt.handler(ctx, g)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return

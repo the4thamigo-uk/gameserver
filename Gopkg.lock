@@ -26,6 +26,14 @@
   version = "v1.0.0"
 
 [[projects]]
+  digest = "1:3786254a486f6d605a52cbc62aa0e71dacc76d5cd1a217c16905831b0f92f6ad"
+  name = "github.com/jtacoma/uritemplates"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "307ae868f90f4ee1b73ebe4596e0394237dacce8"
+  version = "v1.0.0"
+
+[[projects]]
   digest = "1:f97285a3b0a496dcf8801072622230d513f69175665d94de60eb042d03387f6c"
   name = "github.com/julienschmidt/httprouter"
   packages = ["."]
@@ -128,6 +136,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/jtacoma/uritemplates",
     "github.com/julienschmidt/httprouter",
     "github.com/miracl/conflate",
     "github.com/pkg/errors",

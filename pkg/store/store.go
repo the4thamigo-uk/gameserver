@@ -13,5 +13,5 @@ type Store interface {
 	// If version <= 0 then the latest version is loaded.
 	Load(id ID, obj interface{}) (ID, error)
 	// LoadAll retrieves the latest version of all the objects in the store.
-	//LoadAll(newData func() interface{}) (map[ID]interface{}, error)
+	LoadAll(newObj func() interface{}) (map[ID]interface{}, error)
 }

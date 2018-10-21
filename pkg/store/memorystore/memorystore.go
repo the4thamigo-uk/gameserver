@@ -1,6 +1,8 @@
 package memorystore
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/the4thamigo-uk/gameserver/pkg/store"
 	"sync"
 )
@@ -13,7 +15,7 @@ type Store struct {
 
 type storeItem struct {
 	ver  int
-	data string
+	data []byte
 }
 
 // New creates a new instance of an memorystore.Store.
@@ -36,7 +38,7 @@ func (s *Store) Save(id store.ID, obj interface{}) (store.ID, error) {
 		id.Version = item.ver
 	}
 
-	data, err := toJSONBase64(obj)
+	data, err := json.Marshal(obj)
 	if err != nil {
 		return id, errData(id.ID, err)
 	}
@@ -62,7 +64,7 @@ func (s *Store) Load(id store.ID, obj interface{}) (store.ID, error) {
 		return id, errWrongVersion(id.ID, id.Version, item.ver)
 	}
 
-	err := fromJSONBase64(item.data, obj)
+	err := json.Unmarshal(item.data, obj)
 	if err != nil {
 		return id, errData(id.ID, err)
 	}
@@ -71,17 +73,19 @@ func (s *Store) Load(id store.ID, obj interface{}) (store.ID, error) {
 }
 
 // LoadAll retrieves the latest version of all the objects in the store.
-func (s *Store) LoadAll(newData func() interface{}) (map[string]interface{}, error) {
+func (s *Store) LoadAll(newData func() interface{}) (map[store.ID]interface{}, error) {
 	s.mtx.Lock()
 	defer s.mtx.Unlock()
-	objs := map[string]interface{}{}
+	objs := map[store.ID]interface{}{}
 	for id, item := range s.m {
 		obj := newData()
-		err := fromJSONBase64(item.data, obj)
+		fmt.Println(string(item.data))
+		err := json.Unmarshal(item.data, obj)
+		fmt.Println(obj)
 		if err != nil {
 			return nil, err
 		}
-		objs[id] = obj
+		objs[store.NewID(id, item.ver)] = obj
 	}
 
 	return objs, nil

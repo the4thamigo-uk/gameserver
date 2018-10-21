@@ -26,5 +26,11 @@ type globals struct {
 }
 
 func rootIndex(r *request, g *globals) (*response, error) {
-	return nil, nil
+	return &response{
+		Links: g.routes.Links(
+			[]string{
+				relHangmanList,
+			},
+			nil,
+		)}, nil
 }

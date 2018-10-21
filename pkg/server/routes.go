@@ -20,6 +20,7 @@ var uriTmplRegex = regexp.MustCompile(`:([^/]*)`)
 const (
 	relIndex             = "index"
 	relHangmanList       = "hangman:list"
+	relHangmanJoin       = "hangman:join"
 	relHangmanCreate     = "hangman:create"
 	relHangmanPlayLetter = "hangman:play:letter"
 	relHangmanPlayWord   = "hangman:play:word"
@@ -36,6 +37,11 @@ func newRoutes() routes {
 			path:    "/hangman",
 			method:  "GET",
 			handler: hangmanList,
+		},
+		relHangmanJoin: &route{
+			path:    "/hangman/:id/:version",
+			method:  "GET",
+			handler: hangmanJoin,
 		},
 		relHangmanCreate: &route{
 			path:    "/hangman/create",
@@ -62,7 +68,6 @@ func newRoutes() routes {
 // Link represents a HAL-like (http://stateless.co/hal_specification.html) structure to specify associated links in a REST-response.
 type Link struct {
 	Href   string
-	Rel    string
 	Method string
 }
 

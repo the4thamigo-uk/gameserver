@@ -10,10 +10,6 @@ import (
 
 const hangmanDefaultTurns = 6
 
-func hangmanList(r *request, g *globals) (*response, error) {
-	return nil, nil
-}
-
 func hangmanCreate(r *request, g *globals) (*response, error) {
 	cfg := g.cfg.Hangman
 	word := cfg.dict.GetAt(rand.Int())
@@ -35,13 +31,43 @@ func hangmanCreate(r *request, g *globals) (*response, error) {
 		)}, nil
 }
 
-func gameID(r *request) (*store.ID, error) {
-	id := r.p.ByName("id")
-	ver, err := strconv.Atoi(r.p.ByName("version"))
+func hangmanList(r *request, g *globals) (*response, error) {
+	res, err := domain.ListHangman(g.store)
 	if err != nil {
-		return nil, errors.Wrap(err, "Version must be an integer")
+		return nil, err
 	}
-	return &store.ID{ID: id, Version: ver}, nil
+	return &response{
+		State: res,
+		Links: g.routes.Links(
+			[]string{
+				relHangmanJoin,
+				relHangmanCreate,
+			},
+			nil,
+		)}, nil
+}
+
+func hangmanJoin(r *request, g *globals) (*response, error) {
+	gid, err := gameID(r)
+	if err != nil {
+		return nil, err
+	}
+	res, err := domain.JoinHangman(g.store, *gid)
+	if err != nil {
+		return nil, err
+	}
+	return &response{
+		State: res,
+		Links: g.routes.Links(
+			[]string{
+				relHangmanPlayLetter,
+				relHangmanPlayWord,
+			},
+			map[string]interface{}{
+				"id":      res.ID.ID,
+				"version": res.ID.Version,
+			},
+		)}, nil
 }
 
 func hangmanPlayLetter(r *request, g *globals) (*response, error) {
@@ -93,4 +119,14 @@ func hangmanPlayWord(r *request, g *globals) (*response, error) {
 				"version": res.ID.Version,
 			},
 		)}, nil
+}
+
+func gameID(r *request) (*store.ID, error) {
+	id := r.p.ByName("id")
+	ver, err := strconv.Atoi(r.p.ByName("version"))
+	if err != nil {
+		return nil, errors.Wrap(err, "Version must be an integer")
+	}
+	gid := store.NewID(id, ver)
+	return &gid, nil
 }

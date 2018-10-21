@@ -32,6 +32,24 @@ func LoadHangman(s store.Store, id store.ID) (*Hangman, store.ID, error) {
 	}
 	return &g, id, err
 }
+func newHangman() interface{} {
+	return &hangman{}
+}
+
+// LoadAllHangman loads all hangman games from the store
+func LoadAllHangman(s store.Store) (map[store.ID]*Hangman, error) {
+	objs, err := s.LoadAll(newHangman)
+	if err != nil {
+		return nil, err
+	}
+	gs := map[store.ID]*Hangman{}
+	for id, obj := range objs {
+		gs[id] = &Hangman{
+			hangman: *obj.(*hangman),
+		}
+	}
+	return gs, nil
+}
 
 // SaveHangman loads a specific game from the store
 func SaveHangman(s store.Store, id store.ID, g *Hangman) (store.ID, error) {
@@ -55,6 +73,20 @@ func CreateHangman(stg store.Store, word string, turns int) (*HangmanResult, err
 		return nil, err
 	}
 	return newHangmanResult(g, id, false), nil
+}
+
+// ListHangman returns details of all current games of hangman in the store
+func ListHangman(stg store.Store) (map[string]*HangmanResult, error) {
+	gs, err := LoadAllHangman(stg)
+	if err != nil {
+		return nil, err
+	}
+	rs := map[string]*HangmanResult{}
+	for id, g := range gs {
+		r := newHangmanResult(g, id, false)
+		rs[id.ID] = r
+	}
+	return rs, nil
 }
 
 // JoinHangman loads an existing game instance.

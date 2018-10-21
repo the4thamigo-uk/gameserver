@@ -10,6 +10,8 @@ type data struct {
 	X int
 }
 
+func newData() interface{} { return &data{} }
+
 func TestMemoryStore_SaveNew(t *testing.T) {
 	id := store.NewID("123", 0)
 	s := New()
@@ -118,11 +120,29 @@ func TestMemoryStore_LoadWrongVersionFails(t *testing.T) {
 }
 
 func TestMemoryStore_LoadBadDataFails(t *testing.T) {
+	// TODO : this test is bound to implementation
 	id := store.NewID("123", 0)
 	s := New()
-	s.m[id.ID] = &storeItem{data: "garbage"}
+	s.m[id.ID] = &storeItem{data: []byte("garbage")}
 
 	var obj data
 	_, err := s.Load(id, obj)
 	assert.NotNil(t, err.(store.ErrData))
+}
+
+func TestMemoryStore_LoadAll(t *testing.T) {
+	s := New()
+	obj1 := data{X: 1}
+	id1 := store.NewID("item1", 1)
+	_, err := s.Save(id1, obj1)
+	assert.Nil(t, err)
+	obj2 := data{X: 2}
+	id2 := store.NewID("item21", 2)
+	_, err = s.Save(id2, obj2)
+	assert.Nil(t, err)
+
+	objs, err := s.LoadAll(newData)
+	assert.Len(t, objs, 2)
+	assert.Equal(t, obj1, *objs[id1.WithVersion(2)].(*data))
+	assert.Equal(t, obj2, *objs[id2.WithVersion(3)].(*data))
 }

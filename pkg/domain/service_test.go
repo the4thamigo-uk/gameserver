@@ -53,6 +53,14 @@ func TestService_CreateHangman(t *testing.T) {
 	assert.Equal(t, Play, r.State)
 }
 
+func TestService_JoinHangman(t *testing.T) {
+	s := memorystore.New()
+	r1, err := CreateHangman(s, "word", 5)
+	assert.Nil(t, err)
+	r2, err := JoinHangman(s, r1.ID)
+	assert.Equal(t, r1, r2)
+}
+
 func TestService_CreateUniqueIDs(t *testing.T) {
 	s := memorystore.New()
 	r1, err := CreateHangman(s, "word", 5)
@@ -108,4 +116,20 @@ func TestService_PlayLetterIncorrect(t *testing.T) {
 	assert.Equal(t, 4, r.Turns)
 	assert.Equal(t, Play, r.State)
 	assert.False(t, r.Success)
+}
+
+func TestService_ListGames(t *testing.T) {
+	s := memorystore.New()
+	r1, err := CreateHangman(s, "apple", 5)
+	assert.Nil(t, err)
+	r2, err := CreateHangman(s, "banana", 6)
+	assert.Nil(t, err)
+	rs, err := ListHangman(s)
+	assert.Nil(t, err)
+
+	t.Log(rs)
+
+	assert.Len(t, rs, 2)
+	assert.Equal(t, r1, rs[r1.ID.ID])
+	assert.Equal(t, r2, rs[r2.ID.ID])
 }

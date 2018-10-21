@@ -23,6 +23,10 @@ func testConfig() *Config {
 	}
 }
 
+func (s *Server) serveHTTP(w http.ResponseWriter, r *http.Request) {
+	s.s.Handler.ServeHTTP(w, r)
+}
+
 func TestServer_Start(t *testing.T) {
 
 	s := NewServer(testConfig())

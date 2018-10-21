@@ -55,10 +55,6 @@ func (s *Server) Shutdown() {
 	s.s.Shutdown(ctx)
 }
 
-func (s *Server) serveHTTP(w http.ResponseWriter, r *http.Request) {
-	s.s.Handler.ServeHTTP(w, r)
-}
-
 func rootHandler(h handler, g *globals) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		ctx := &request{

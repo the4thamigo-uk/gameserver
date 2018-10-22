@@ -12,6 +12,7 @@ simple games.
 
 The game server currently only supports the game [Hangman](https://en.wikipedia.org/wiki/Hangman_(game)).
 The game server currently uses an in-memory datastore to store game data.
+There is currently no support for authentication or user identity, so all games are public.
 
 The gameserver uses are a number of sub-packages the godocs can be found at
 [/pkg/domain](https://godoc.org/github.com/the4thamigo-uk/gameserver/pkg/domain),
@@ -194,6 +195,8 @@ Guess the word with :
         }
       }
     }
+
+Note that both actions increment the game version, which implements an [optimistic offline lock](https://martinfowler.com/eaaCatalog/optimisticOfflineLock.html).
 
 List the games of hangman with :
 

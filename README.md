@@ -6,5 +6,7 @@
 
 ## Description
 
-Gameserver is a simple implementation of a REST-based API that allows a user to play 
+Gameserver is a simple implementation of a REST-based API that allows a user to play
 simple games. Currently the only supported game is [Hangman](https://en.wikipedia.org/wiki/Hangman_(game)).
+
+

@@ -15,9 +15,10 @@ The game server currently uses an in-memory datastore to store game data.
 There is currently no support for authentication or user identity, so all games are public.
 
 The gameserver uses are a number of sub-packages the godocs can be found at
-[/pkg/domain](https://godoc.org/github.com/the4thamigo-uk/gameserver/pkg/domain),
-[/pkg/store](https://godoc.org/github.com/the4thamigo-uk/gameserver/pkg/store) and
-[/pkg/server](https://godoc.org/github.com/the4thamigo-uk/gameserver/pkg/server)
+
+- The core domain logic is implemented in [/pkg/domain](./pkg/domain) ([godoc](https://godoc.org/github.com/the4thamigo-uk/gameserver/pkg/domain))
+- The data store is implemented in [/pkg/store](./pkg/store) ([godoc](https://godoc.org/github.com/the4thamigo-uk/gameserver/pkg/store))
+- The REST api is implemented in [/pkg/server](./pkg/server) ([godoc](https://godoc.org/github.com/the4thamigo-uk/gameserver/pkg/server))
 
 ## Getting Started
 

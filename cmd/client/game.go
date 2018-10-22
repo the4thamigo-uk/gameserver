@@ -74,6 +74,9 @@ func enterOption(opts options) (*option, error) {
 		fmt.Println("Please choose an option :")
 		var s string
 		_, err := fmt.Scanln(&s)
+		if err != nil {
+			return nil, err
+		}
 		i, err := strconv.Atoi(s)
 		if err == nil && i >= 1 && i <= len(opts) {
 			return opts[i-1], nil

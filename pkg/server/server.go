@@ -73,11 +73,13 @@ func rootHandler(rt *route, g *globals) httprouter.Handle {
 		b, err := json.Marshal(rsp)
 		if err != nil {
 			log.Error(err)
-			w.WriteHeader(http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 		w.Header().Set("Content-Type", "application/hal+json")
 		_, err = w.Write(b)
 		if err != nil {
+			log.Error(err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}

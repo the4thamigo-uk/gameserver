@@ -41,5 +41,5 @@ type ErrAlreadyUsed error
 
 func errAlreadyUsed(r rune) error {
 	return ErrInvalidWord(
-		errors.Errorf(`You have previously used the letter '%v'.`, r))
+		errors.Errorf(`You have previously used the letter '%c'.`, r))
 }

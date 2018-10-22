@@ -1,0 +1,7 @@
+address: ":8080"
+hangman:
+  words:
+  - 苹果
+  - 巴南
+  - 橙子
+  turns: 6

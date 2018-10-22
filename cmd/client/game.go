@@ -40,7 +40,7 @@ func run(url string) error {
 	}
 }
 
-func processResponse(rootUrl string, rel string, rsp *response) (string, *response, error) {
+func processResponse(rootURL string, rel string, rsp *response) (string, *response, error) {
 	fmt.Println(rsp.Links["self"].Title)
 
 	opts := optionsFromLinks(rsp.Links)
@@ -55,7 +55,7 @@ func processResponse(rootUrl string, rel string, rsp *response) (string, *respon
 		return "", nil, err
 	}
 
-	url, err := joinUrl(rootUrl, path)
+	url, err := joinURL(rootURL, path)
 	if err != nil {
 		return "", nil, err
 	}
@@ -169,7 +169,7 @@ func parseBody(r *http.Response) (*response, error) {
 	return &rsp, nil
 }
 
-func joinUrl(base string, path string) (string, error) {
+func joinURL(base string, path string) (string, error) {
 	p, err := pkgurl.Parse(path)
 	if err != nil {
 		return "", err

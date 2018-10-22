@@ -4,12 +4,21 @@
 [![Coverage Status](https://coveralls.io/repos/the4thamigo-uk/gameserver/badge.svg?branch=master&service=github)](https://coveralls.io/github/the4thamigo-uk/gameserver?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/the4thamigo-uk/gameserver)](https://goreportcard.com/report/github.com/the4thamigo-uk/gameserver)
 
+
 ## Description
 
 Gameserver is a simple implementation of a REST-based API that allows a user to play
-simple games. Currently the only supported game is [Hangman](https://en.wikipedia.org/wiki/Hangman_(game)).
+simple games.
 
-# Getting Started
+The game server currently only supports the game [Hangman](https://en.wikipedia.org/wiki/Hangman_(game)).
+The game server currently uses an in-memory datastore to store game data.
+
+The gameserver uses are a number of sub-packages the godocs can be found at
+[/pkg/domain](https://godoc.org/github.com/the4thamigo-uk/gameserver/pkg/domain),
+[/pkg/store](https://godoc.org/github.com/the4thamigo-uk/gameserver/pkg/store) and
+[/pkg/server](https://godoc.org/github.com/the4thamigo-uk/gameserver/pkg/server)
+
+## Getting Started
 
 To build run
 

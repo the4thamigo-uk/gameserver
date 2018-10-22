@@ -3,6 +3,7 @@ package server
 import (
 	"encoding/json"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/the4thamigo-uk/gameserver/pkg/domain"
 	"io"
 	"io/ioutil"
@@ -34,7 +35,7 @@ func TestServer_Start(t *testing.T) {
 	go func() {
 		err = s.ListenAndServe()
 	}()
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	s.Shutdown()
 }
 
@@ -69,7 +70,7 @@ func TestServer_PlayLetterToWin(t *testing.T) {
 	s := NewServer(testConfig())
 	var r1 testHangmanResponse
 	b1, err := testServerRequest(s, "POST", "/hangman/create", &r1)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	t.Log(string(b1))
 	assert.Equal(t, 1, r1.Game.ID.Version)
 	assert.Equal(t, "    ", r1.Game.Current)
@@ -81,7 +82,7 @@ func TestServer_PlayLetterToWin(t *testing.T) {
 	var r2 testHangmanResponse
 	url2 := strings.Replace(link2.Href, "{letter}", "w", -1)
 	b2, err := testServerRequest(s, link2.Method, url2, &r2)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	t.Log(string(b2))
 
 	assert.Equal(t, r1.Game.ID.ID, r2.Game.ID.ID)
@@ -95,7 +96,7 @@ func TestServer_PlayLetterToWin(t *testing.T) {
 	var r3 testHangmanResponse
 	url3 := strings.Replace(link3.Href, "{letter}", "x", -1)
 	b3, err := testServerRequest(s, link3.Method, url3, &r3)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	t.Log(string(b3))
 
 	assert.Equal(t, r1.Game.ID.ID, r3.Game.ID.ID)

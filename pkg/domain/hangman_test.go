@@ -2,12 +2,13 @@ package domain
 
 import (
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"testing"
 )
 
 func TestHangman_CreateLatin(t *testing.T) {
 	g, err := NewHangman("english", 6)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	assert.NotNil(t, g)
 	assert.Equal(t, "ENGLISH", g.Word())
 	assert.Equal(t, "       ", g.Current())
@@ -15,7 +16,7 @@ func TestHangman_CreateLatin(t *testing.T) {
 
 func TestHangman_CreateNonLatin(t *testing.T) {
 	g, err := NewHangman("русский", 6)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	assert.NotNil(t, g)
 	assert.Equal(t, "РУССКИЙ", g.Word())
 }
@@ -37,7 +38,7 @@ func TestHangman_PlayWordCorrect(t *testing.T) {
 	ok, err := g.PlayWord("english")
 	assert.True(t, ok)
 	assert.Equal(t, 6, g.Turns())
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	assert.Equal(t, Win, g.State())
 }
 
@@ -45,7 +46,7 @@ func TestHangman_PlayWordIncorrect(t *testing.T) {
 	g, _ := NewHangman("english", 6)
 	ok, err := g.PlayWord("german")
 	assert.False(t, ok)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	assert.Equal(t, 5, g.Turns())
 	assert.Equal(t, "       ", g.Current())
 	assert.Equal(t, Play, g.State())
@@ -75,21 +76,21 @@ func TestHangman_PlayLetterExists(t *testing.T) {
 	g, _ := NewHangman("english", 6)
 	ok, err := g.PlayLetter('E')
 	assert.True(t, ok)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	assert.Equal(t, 6, g.Turns())
 	assert.Equal(t, "ENGLISH", g.Word())
 	assert.Equal(t, "E      ", g.Current())
 
 	ok, err = g.PlayLetter('S')
 	assert.True(t, ok)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	assert.Equal(t, 6, g.Turns())
 	assert.Equal(t, "ENGLISH", g.Word())
 	assert.Equal(t, "E    S ", g.Current())
 
 	ok, err = g.PlayLetter('I')
 	assert.True(t, ok)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	assert.Equal(t, 6, g.Turns())
 	assert.Equal(t, "ENGLISH", g.Word())
 	assert.Equal(t, "E   IS ", g.Current())
@@ -99,7 +100,7 @@ func TestHangman_PlayLetterNotExists(t *testing.T) {
 	g, _ := NewHangman("english", 6)
 	ok, err := g.PlayLetter('X')
 	assert.False(t, ok)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	assert.Equal(t, 5, g.Turns())
 	assert.Equal(t, "ENGLISH", g.Word())
 	assert.Equal(t, "       ", g.Current())

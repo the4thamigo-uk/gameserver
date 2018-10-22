@@ -76,9 +76,14 @@ func hangmanPlayWord(r *request, g *globals) (*response, error) {
 
 func gameID(r *request) (*store.ID, error) {
 	id := r.p.ByName("id")
-	ver, err := strconv.Atoi(r.p.ByName("version"))
-	if err != nil {
-		return nil, errors.Wrap(err, "Version must be an integer")
+
+	ver := 0
+	if s := r.p.ByName("version"); s != "" {
+		i, err := strconv.Atoi(s)
+		if err != nil {
+			return nil, errors.Wrap(err, "Version must be an integer")
+		}
+		ver = i
 	}
 	gid := store.NewID(id, ver)
 	return &gid, nil

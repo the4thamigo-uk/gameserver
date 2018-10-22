@@ -29,6 +29,12 @@ const (
 )
 
 func newRoutes() routes {
+
+	listRels := []string{
+		relHangmanCreate,
+		relHangmanList,
+		relHangmanJoin,
+	}
 	playRels := []string{
 		relHangmanPlayLetter,
 		relHangmanPlayWord,
@@ -50,11 +56,11 @@ func newRoutes() routes {
 			path:      "/hangman",
 			method:    http.MethodGet,
 			handler:   hangmanList,
-			linksRels: append(playRels, relHangmanJoin),
+			linksRels: listRels,
 		},
 		relHangmanJoin: &route{
 			title:     "Join hangman game",
-			path:      "/hangman/:id/:version",
+			path:      "/hangman/:id",
 			method:    http.MethodGet,
 			handler:   hangmanJoin,
 			linksRels: playRels,

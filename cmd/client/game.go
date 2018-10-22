@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	pkgurl "net/url"
+	"strconv"
 )
 
 var relOrder = []string{"index",
@@ -42,7 +43,7 @@ func run(url string) error {
 func processResponse(rootUrl string, rel string, rsp *response) (string, *response, error) {
 	fmt.Println(rsp.Links["self"].Title)
 
-	opts := optionList(rsp.Links)
+	opts := optionsFromLinks(rsp.Links)
 
 	opt, err := enterOption(opts)
 	if err != nil {
@@ -67,33 +68,17 @@ func processResponse(rootUrl string, rel string, rsp *response) (string, *respon
 	return opt.rel, rsp, nil
 }
 
-func optionList(ls links) options {
-	opts := options{}
-	for _, rel := range relOrder {
-		l, ok := ls[rel]
-		if ok {
-			opts = append(opts,
-				&option{
-					link: l,
-					rel:  rel,
-				},
-			)
-		}
-	}
-	return opts
-}
-
 func enterOption(opts options) (*option, error) {
 	for {
 		displayOptions(opts)
-		fmt.Println("Please enter an option :")
-		var i int
-		_, err := fmt.Scanln(&i)
+		fmt.Println("Please choose an option :")
+		var s string
+		_, err := fmt.Scanln(&s)
+		i, err := strconv.Atoi(s)
 		if err == nil && i >= 1 && i <= len(opts) {
 			return opts[i-1], nil
 		}
-		fmt.Printf("Option not valid. Please try again.")
-		fmt.Println(i)
+		fmt.Println("Option not valid. Please try again.")
 	}
 }
 
@@ -130,9 +115,8 @@ func enterValues(opt *option) (string, error) {
 
 func displayResult(rel string, rsp *response) {
 	if rsp.Error != nil {
-		fmt.Printf("The server reported an error : '%v'\f", rsp.Error.Message)
-	}
-	if rsp.Game != nil {
+		fmt.Printf("The server reported an error : '%v'\n", rsp.Error.Message)
+	} else if rsp.Game != nil {
 		if rsp.Game.Success != nil {
 			if *rsp.Game.Success {
 				fmt.Println("Your guess was CORRECT.")
@@ -142,11 +126,20 @@ func displayResult(rel string, rsp *response) {
 		}
 		switch rsp.Game.State {
 		case domain.Win:
-			fmt.Printf("You have WON with %v turns remaining. The word was '%v'.\n", rsp.Game.Turns, *rsp.Game.Word)
+			fmt.Printf("You have WON with %v turn(s) remaining. The word was '%v'.\n", rsp.Game.Turns, *rsp.Game.Word)
 		case domain.Lose:
 			fmt.Printf("You have LOST. The word was '%v'.\n", *rsp.Game.Word)
 		case domain.Play:
 			fmt.Printf("The word is '%v' and you have %v turn(s) remaining.\n", rsp.Game.Current, rsp.Game.Turns)
+		}
+	} else if rsp.Games != nil {
+		if len(rsp.Games) == 0 {
+			fmt.Printf("There are no games on the server.\n")
+		} else {
+			fmt.Printf("Games on server :\n")
+			for i, g := range rsp.Games {
+				fmt.Printf("%v). Game '%v' is at version '%v', with %v turn(s) remaining. Current word is '%v' and the game state is '%v'.\n", i+1, g.ID.ID, g.ID.Version, g.Turns, g.Current, g.State)
+			}
 		}
 	}
 }
@@ -168,7 +161,6 @@ func parseBody(r *http.Response) (*response, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(string(b))
 	var rsp response
 	err = json.Unmarshal(b, &rsp)
 	if err != nil {

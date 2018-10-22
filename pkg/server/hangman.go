@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-const hangmanDefaultTurns = 6
+const hangmanDefaultTurns = 9
 
 func hangmanCreate(r *request, g *globals) (*response, error) {
 	cfg := g.cfg.Hangman

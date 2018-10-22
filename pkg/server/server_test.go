@@ -28,17 +28,6 @@ func (s *Server) serveHTTP(w http.ResponseWriter, r *http.Request) {
 	s.s.Handler.ServeHTTP(w, r)
 }
 
-func TestServer_Start(t *testing.T) {
-
-	s := NewServer(testConfig())
-	var err error
-	go func() {
-		err = s.ListenAndServe()
-	}()
-	require.Nil(t, err)
-	s.Shutdown()
-}
-
 func unmarshalReader(r io.Reader, obj interface{}) ([]byte, error) {
 	b, err := ioutil.ReadAll(r)
 	if err != nil {

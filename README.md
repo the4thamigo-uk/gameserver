@@ -8,11 +8,15 @@
 ## Description
 
 Gameserver is a simple implementation of a REST-based API that allows a user to play
-simple games.
+simple games. It is intended as an personal demonstration project and will be updated
+on an ongoing basis to capture ideas and best practice.
 
-The game server currently only supports the game [Hangman](https://en.wikipedia.org/wiki/Hangman_(game)).
-The game server currently uses an in-memory datastore to store game data.
-There is currently no support for authentication or user identity, so all games are public.
+The following are the key limitations, but please see the issues list for known
+problems and planned improvements :
+
+- The game server currently only supports the game [Hangman](https://en.wikipedia.org/wiki/Hangman_(game)).
+- The game server currently stores data in a simple in-memory datastore implementation, so the server is not stateless.
+- There is currently no support for authentication or user identity, so all games are public.
 
 The gameserver uses are a number of sub-packages the godocs can be found at
 

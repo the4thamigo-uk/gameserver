@@ -245,4 +245,4 @@ List the games of hangman with :
 
 Alternatively use the test command-line client tool :
 
-  ./cmd/client/client
+    ./cmd/client/client

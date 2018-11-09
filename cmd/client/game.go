@@ -156,6 +156,7 @@ func request(method string, url string, body []byte) (*response, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer rsp.Body.Close()
 	return parseBody(rsp)
 }
 

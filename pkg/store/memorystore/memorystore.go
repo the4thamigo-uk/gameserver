@@ -32,14 +32,14 @@ func (s *Store) Save(id store.ID, obj interface{}) (store.ID, error) {
 	item, ok := s.m[id.ID]
 	if ok {
 		if id.Version > 0 && item.ver != id.Version {
-			return id, errWrongVersion(id.ID, id.Version, item.ver)
+			return id, store.NewErrWrongVersion(id.ID, id.Version, item.ver)
 		}
 		id.Version = item.ver
 	}
 
 	data, err := json.Marshal(obj)
 	if err != nil {
-		return id, errData(id.ID, err)
+		return id, store.NewErrData(id.ID, err)
 	}
 
 	id.Version++
@@ -57,15 +57,15 @@ func (s *Store) Load(id store.ID, obj interface{}) (store.ID, error) {
 
 	item, ok := s.m[id.ID]
 	if !ok {
-		return id, errNotFound(id.ID)
+		return id, store.NewErrNotFound(id.ID)
 	}
 	if id.Version > 0 && item.ver != id.Version {
-		return id, errWrongVersion(id.ID, id.Version, item.ver)
+		return id, store.NewErrWrongVersion(id.ID, id.Version, item.ver)
 	}
 
 	err := json.Unmarshal(item.data, obj)
 	if err != nil {
-		return id, errData(id.ID, err)
+		return id, store.NewErrData(id.ID, err)
 	}
 	id.Version = item.ver
 	return id, err

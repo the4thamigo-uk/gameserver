@@ -8,7 +8,7 @@ import (
 
 // Store is an in-memory object store
 type Store struct {
-	mtx sync.Mutex
+	mtx sync.RWMutex
 	m   map[string]*storeItem
 }
 
@@ -52,8 +52,8 @@ func (s *Store) Save(id store.ID, obj interface{}) (store.ID, error) {
 
 // Load retrieves a given version of the object.
 func (s *Store) Load(id store.ID, obj interface{}) (store.ID, error) {
-	s.mtx.Lock()
-	defer s.mtx.Unlock()
+	s.mtx.RLock()
+	defer s.mtx.RUnlock()
 
 	item, ok := s.m[id.ID]
 	if !ok {
@@ -73,8 +73,8 @@ func (s *Store) Load(id store.ID, obj interface{}) (store.ID, error) {
 
 // LoadAll retrieves the latest version of all the objects in the store.
 func (s *Store) LoadAll(newData func() interface{}) (map[store.ID]interface{}, error) {
-	s.mtx.Lock()
-	defer s.mtx.Unlock()
+	s.mtx.RLock()
+	defer s.mtx.RUnlock()
 	objs := map[store.ID]interface{}{}
 	for id, item := range s.m {
 		obj := newData()
